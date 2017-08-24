@@ -10,11 +10,12 @@ const morgan       = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
+const RedisStore = require('connect-redis')(session)
 
-const configDB = require('./config/database.js');
+const config = require('./config/database.js');
 
 // configuration ===============================================================
-mongoose.connect(configDB.url, {useMongoClient: true}, (error) => {});
+mongoose.connect(config.url, {useMongoClient: true}, (error) => {});
 app.use('/public', express.static(path.join(__dirname, '..', '/client/public')));
 
 require('./config/passport')(passport); // pass passport for configuration
@@ -29,7 +30,10 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
 app.use(session({
-  secret: 'ilovescotchscotchyscotchscotch',
+  store: new RedisStore({
+    url: config.redis
+  }),
+  secret: 'placesSecretCookiePass',
   name: 'places-cookie',
   resave: true,
   saveUninitialized: true
@@ -40,7 +44,7 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
-require('./routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+require('./routes/index')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
 app.listen(port);

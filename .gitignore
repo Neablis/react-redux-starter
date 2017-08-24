@@ -39,3 +39,4 @@ Thumbs.db
 # Vender directories #
 #####################
 /node_modules/*
+/server/config/auth.js
