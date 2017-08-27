@@ -14,8 +14,6 @@ class Main extends PureComponent {
       testOn
     } = this.props;
 
-    console.log("TEst", test)
-
     return (
       <div>
         <div className="starter-main container-fluid">

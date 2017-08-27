@@ -1,4 +1,8 @@
+// libraries
 import React, {Component, PureComponent} from 'react';
+
+// components
+import MapComponent from './maps/searchMap.jsx';
 
 class Body extends PureComponent {
   render () {
@@ -13,19 +17,7 @@ class Body extends PureComponent {
         <h1>Dashboard</h1>
 
         <section className="row text-center placeholders">
-          {
-            test ?
-              (
-                <button onClick={testOff}>
-                  Turn me off
-                </button>
-              ):
-              (
-                <button onClick={testOn}>
-                  Turn me On
-                </button>
-              )
-            }
+          <MapComponent />
         </section>
       </main>
     );

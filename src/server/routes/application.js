@@ -15,7 +15,6 @@ module.exports = function(app, passport) {
 
   // APP SECTION =========================
   app.get('/app', isLoggedIn, function(req, res) {
-    console.log("HERE");
     res.render('pages/app.ejs', {
       user : req.user
     });
