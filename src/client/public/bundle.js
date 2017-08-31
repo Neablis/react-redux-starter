@@ -46371,34 +46371,13 @@ class Body extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_google_maps__ = __webpack_require__(362);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_google_maps___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox__ = __webpack_require__(555);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__WrappedMap_jsx__ = __webpack_require__(557);
 /* global google */
 
 
 
 
 
-
-const SearchBoxExampleGoogleMap = Object(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["withGoogleMap"])(props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-  __WEBPACK_IMPORTED_MODULE_1_react_google_maps__["GoogleMap"],
-  {
-    ref: props.onMapMounted,
-    defaultZoom: 15,
-    center: props.center,
-    onBoundsChanged: props.onBoundsChanged
-  },
-  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox___default.a, {
-    ref: props.onSearchBoxMounted,
-    bounds: props.bounds,
-    controlPosition: google.maps.ControlPosition.TOP_LEFT,
-    onPlacesChanged: props.onPlacesChanged,
-    inputPlaceholder: "Customized your placeholder",
-    inputClassName: "map-search-box"
-  }),
-  props.markers.map((marker, index) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["Marker"], { position: marker.location, key: index })),
-  props.directions && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["DirectionsRenderer"], { directions: props.directions })
-));
 
 /*
  * https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
@@ -46414,6 +46393,8 @@ class SearchBoxExample extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] 
         lat: 37.7749,
         lng: -122.4194
       },
+      showMarkers: true,
+      showDirections: false,
       markers: [],
       directions: null
     };
@@ -46468,15 +46449,29 @@ class SearchBoxExample extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] 
     }
   }
 
+  toggleMarkers() {
+    this.setState({
+      showMarkers: !this.state.showMarkers,
+      showDirections: !this.state.showDirections
+    });
+  }
+
   handlePlacesChanged() {
     const DirectionsService = new google.maps.DirectionsService();
     const places = this._searchBox.getPlaces();
 
+    debugger;
     const bounds = new google.maps.LatLngBounds();
 
     let markers = places.map(place => ({
-      location: place.geometry.location,
-      placeId: place.place_id
+      location: {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      },
+      placeId: place.place_id,
+      formatted_address: place.formatted_address,
+      name: place.name,
+      url: place.url
     }));
 
     if (this.state.markers.length) {
@@ -46500,17 +46495,30 @@ class SearchBoxExample extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] 
   }
 
   render() {
-    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SearchBoxExampleGoogleMap, {
+    let tmpMarkers = [];
+    let tmpDirections = null;
+
+    if (this.state.showMarkers) {
+      tmpMarkers = this.state.markers.map((marker, index) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["Marker"], { position: { lat: marker.location.lat(), lng: marker.location.lng() }, key: index }));
+    }
+
+    if (this.state.showDirections && this.state.directions) {
+      tmpDirections = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["DirectionsRenderer"], { directions: this.state.directions });
+    }
+
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__WrappedMap_jsx__["a" /* default */], {
       containerElement: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { height: `500px`, width: '100%' } }),
       mapElement: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { height: `100%`, width: '100%' } }),
-      directions: this.state.directions,
       center: this.state.center,
       onMapMounted: this.handleMapMounted.bind(this),
       onBoundsChanged: this.handleBoundsChanged.bind(this),
       onSearchBoxMounted: this.handleSearchBoxMounted.bind(this),
       bounds: this.state.bounds,
       onPlacesChanged: this.handlePlacesChanged.bind(this),
-      markers: this.state.markers
+      directions: tmpDirections,
+      markers: tmpMarkers,
+      toggleMarkers: this.toggleMarkers.bind(this),
+      shown: this.state.showMarkers
     });
   }
 }
@@ -54819,6 +54827,51 @@ function mountInputElementToControlPositionOnMap(inputEl, controlPosition, map) 
 function unmountInputElementFromControlPositionOnMap(index, controlPosition, map) {
   return map.controls[controlPosition].removeAt(index);
 }
+
+/***/ }),
+/* 557 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_google_maps__ = __webpack_require__(362);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_google_maps___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox__ = __webpack_require__(555);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox__);
+
+
+
+
+
+
+const WrappedMap = Object(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["withGoogleMap"])(props => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+  __WEBPACK_IMPORTED_MODULE_1_react_google_maps__["GoogleMap"],
+  {
+    ref: props.onMapMounted,
+    defaultZoom: 15,
+    center: props.center,
+    onBoundsChanged: props.onBoundsChanged
+  },
+  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_google_maps_lib_places_SearchBox___default.a, {
+    ref: props.onSearchBoxMounted,
+    bounds: props.bounds,
+    controlPosition: google.maps.ControlPosition.TOP_LEFT,
+    onPlacesChanged: props.onPlacesChanged,
+    inputPlaceholder: props.placeholder,
+    inputClassName: "map-search-box"
+  }),
+  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+    name: "directions-box",
+    type: "checkbox",
+    checked: props.shown,
+    onChange: props.toggleMarkers
+  }),
+  props.markers,
+  props.directions
+));
+
+/* harmony default export */ __webpack_exports__["a"] = (WrappedMap);
 
 /***/ })
 /******/ ]);

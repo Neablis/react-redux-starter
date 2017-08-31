@@ -3,34 +3,11 @@ import React, {Component} from "react";
 
 import {
   withGoogleMap,
-  GoogleMap,
   Marker,
   DirectionsRenderer
 } from "react-google-maps";
 
-import SearchBox from 'react-google-maps/lib/places/SearchBox';
-
-const SearchBoxExampleGoogleMap = withGoogleMap(props => (
-  <GoogleMap
-    ref={props.onMapMounted}
-    defaultZoom={15}
-    center={props.center}
-    onBoundsChanged={props.onBoundsChanged}
-  >
-    <SearchBox
-      ref={props.onSearchBoxMounted}
-      bounds={props.bounds}
-      controlPosition={google.maps.ControlPosition.TOP_LEFT}
-      onPlacesChanged={props.onPlacesChanged}
-      inputPlaceholder="Customized your placeholder"
-      inputClassName='map-search-box'
-    />
-    {props.markers.map((marker, index) => (
-      <Marker position={marker.location} key={index} />
-    ))}
-    {props.directions && <DirectionsRenderer directions={props.directions} />}
-  </GoogleMap>
-));
+import WrappedMap from './WrappedMap.jsx'
 
 /*
  * https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
@@ -46,6 +23,8 @@ export default class SearchBoxExample extends Component {
         lat: 37.7749,
         lng: -122.4194
       },
+      showMarkers: true,
+      showDirections: false,
       markers: [],
       directions: null
     };
@@ -100,15 +79,29 @@ export default class SearchBoxExample extends Component {
     }
   }
 
+  toggleMarkers() {
+    this.setState({
+      showMarkers: !this.state.showMarkers,
+      showDirections: !this.state.showDirections
+    });
+  }
+
   handlePlacesChanged() {
     const DirectionsService = new google.maps.DirectionsService();
     const places = this._searchBox.getPlaces();
 
+    debugger;
     const bounds = new google.maps.LatLngBounds();
 
     let markers = places.map(place => ({
-      location: place.geometry.location,
-      placeId: place.place_id
+      location: {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      },
+      placeId: place.place_id,
+      formatted_address: place.formatted_address,
+      name: place.name,
+      url: place.url
     }));
 
     if (this.state.markers.length) {
@@ -132,22 +125,37 @@ export default class SearchBoxExample extends Component {
   }
 
   render() {
+    let tmpMarkers = [];
+    let tmpDirections = null;
+
+    if (this.state.showMarkers) {
+      tmpMarkers = this.state.markers.map((marker, index) => (
+        <Marker position={{lat: marker.location.lat(), lng: marker.location.lng()}} key={index} />
+      ));
+    }
+
+    if (this.state.showDirections && this.state.directions) {
+      tmpDirections = <DirectionsRenderer directions={this.state.directions} />;
+    }
+
     return (
-      <SearchBoxExampleGoogleMap
+      <WrappedMap
         containerElement={
           <div style={{ height: `500px`, width: '100%' }} />
         }
         mapElement={
           <div style={{ height: `100%`, width: '100%' }} />
         }
-        directions={this.state.directions}
         center={this.state.center}
         onMapMounted={this.handleMapMounted.bind(this)}
         onBoundsChanged={this.handleBoundsChanged.bind(this)}
         onSearchBoxMounted={this.handleSearchBoxMounted.bind(this)}
         bounds={this.state.bounds}
         onPlacesChanged={this.handlePlacesChanged.bind(this)}
-        markers={this.state.markers}
+        directions={tmpDirections}
+        markers={tmpMarkers}
+        toggleMarkers={this.toggleMarkers.bind(this)}
+        shown={this.state.showMarkers}
       />
     );
   }

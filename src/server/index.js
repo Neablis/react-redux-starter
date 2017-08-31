@@ -15,6 +15,7 @@ const RedisStore = require('connect-redis')(session)
 const config = require('./config/database.js');
 
 // configuration ===============================================================
+mongoose.Promise = Promise;  
 mongoose.connect(config.url, {useMongoClient: true}, (error) => {});
 app.use('/public', express.static(path.join(__dirname, '..', '/client/public')));
 
