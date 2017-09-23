@@ -14,12 +14,6 @@ module.exports = function(app, passport) {
 
   router.route('/trips')
     .post(function(req, res) {
-      var trip = new Trip.Trip();
-
-      trip.title = 'First new trip';
-      trip.description = 'something new trip';
-      trip.owner = 'neablis121@gmail.com'
-
       trip.save(function(err) {
         if (err)
           res.send(err);
