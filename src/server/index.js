@@ -14,9 +14,16 @@ const RedisStore = require('connect-redis')(session)
 
 const config = require('./config/database.js');
 
+const mongoUri = process.env.MONGODB_URI || config.mongo;
+const redisUri = process.env.REDIS_URL || config.redis;
+
+console.log("----------------------", process.env);
+
 // configuration ===============================================================
-mongoose.Promise = Promise;  
-mongoose.connect(config.url, {useMongoClient: true}, (error) => {});
+mongoose.Promise = Promise;
+mongoose.connect(mongoUri, {useMongoClient: true}, (error) => {
+  console.log("Error connecting to mongo", error)
+});
 app.use('/public', express.static(path.join(__dirname, '..', '/client/public')));
 
 require('./config/passport')(passport); // pass passport for configuration
@@ -33,7 +40,7 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 // required for passport
 app.use(session({
   store: new RedisStore({
-    url: config.redis
+    url: redisUri
   }),
   secret: 'placesSecretCookiePass',
   name: 'places-cookie',
