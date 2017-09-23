@@ -46638,7 +46638,7 @@ class SearchBoxExample extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] 
     let tmpDirections = null;
 
     if (this.state.showMarkers) {
-      tmpMarkers = this.state.markers.map((marker, index) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["Marker"], { position: { lat: marker.location.lat(), lng: marker.location.lng() }, key: index }));
+      tmpMarkers = this.state.markers.map((marker, index) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_google_maps__["Marker"], { position: { lat: marker.location.lat, lng: marker.location.lng }, key: index }));
     }
 
     if (this.state.showDirections && this.state.directions) {

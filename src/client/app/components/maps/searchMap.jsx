@@ -130,7 +130,7 @@ export default class SearchBoxExample extends Component {
 
     if (this.state.showMarkers) {
       tmpMarkers = this.state.markers.map((marker, index) => (
-        <Marker position={{lat: marker.location.lat(), lng: marker.location.lng()}} key={index} />
+        <Marker position={{lat: marker.location.lat, lng: marker.location.lng}} key={index} />
       ));
     }
 
