@@ -1,34 +1,32 @@
-import React, {Component} from 'react';
-import styles from '../styles/app.css';
+// libraries
+import React, {Component, PureComponent} from 'react';
 
-class Main extends Component {
+// components
+import TopNav from './top-nav.jsx';
+import SideNav from './side-nav.jsx';
+import Body from './body.jsx';
+
+class Main extends PureComponent {
   render () {
     const {
-      App: {
-        test
-      },
-      testOn,
-      testOff
+      test,
+      testOff,
+      testOn
     } = this.props;
 
     return (
       <div>
-        <h1>
-          {`Hello world, ${test}`}
-        </h1>
-        {
-          test ?
-            (
-              <button onClick={testOff}>
-                Turn me off
-              </button>
-            ):
-            (
-              <button onClick={testOn}>
-                Turn me off
-              </button>
-            )
-          }
+        <div className="starter-main container-fluid">
+          <TopNav />
+          <div className="row">
+            <SideNav />
+            <Body
+              test={test}
+              testOff={testOff}
+              testOn={testOn}
+             />
+          </div>
+        </div>
       </div>
     );
   }

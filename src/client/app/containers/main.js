@@ -9,13 +9,11 @@ import {testOn, testOff} from '../actions/app';
 
 // shared
 
-function mapStateToProps(state) {
-  return {
-    App: state.App
-  }
+const mapStateToProps = (state) => {
+  return state.App;
 }
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     testOn() {
       return dispatch(testOn());

@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const initialState = _.merge({}, {
     // Add bootstrapped state here
+    App: {
+      test: true
+    }
   });
 
   const store = configureStore(initialState);
